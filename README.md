@@ -1,9 +1,16 @@
 # A 'No-Library' Interperter in TypeScript
 
-This repro contains a simple interpreter written in plain TypeScrip, without the help of external libraries for lexing or parsing. The project is split into two parts: the generic code for the lexer and parser and the concrete defitions of those.
+This repro contains an interpreter written in TypeScrip, without the usage of external tooling for the lexing or parsing proces. Both the lexer and parser are broken up into a generic implementation and a concrete definition of the language. 
 
 ## Lexer
-The generic lexer accepts an input as follows:
+The generic implementation of the lexer can be found in (`lib/lexer.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/lexer.ts]. The entry point of this module is the `lex` function which produces a array of tokens based on the token type, a `LexerDefintion`, the `eof` token and an input string.
+
+```ts
+export const lex: <Token extends BaseToken>(defs: LexerDefintion<Token>, eofToken: Token, input: string) => Token[]
+```
+
+In the `LexerDefintion` is it possible to both lex by literal strings and regular expressions. By using a regex it is possible to use the source text in the token constructor. A small example can be found below.
+
 ```ts
 import { LexerDefintion, lex, LiteralToken } from './lib/lexer'
 
@@ -14,16 +21,17 @@ export type Token =
 
 const defs: LexerDefintion<Token> = [
     [ '+', { kind: '+' } ],
-    [ '/', { kind: '/' } ],
     [ /(\d+)/, s => ({kind: 'value', value: Number(s)}) ],
 ]
     
 export const run_lexer = (input: string) => lex<Token>(defs, { kind: 'eof' }, input)
 ```
-> most tokens are ommited
+
+The full lexer definition can be found in (`lexer.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lexer.ts].
 
 ## Parser
-The generic parser accepts its config like this:
+The generic implementation of the parser can be found in (`lib/parser.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/parser.ts]. The entrypoint here is the `parser` function which parses an array of nodes into an AST. For this the parser needs a config object with the `precendeces`, the `infix_parsers`, the `prefix_parsers` and the EOF token. The parser definition can be found in (`parser.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/parser.ts]. A portion of this is shown below.
+
 ```ts
 import { ParserConfig, parser } from './lib/parser'
 import { Token } from './lexer'
@@ -49,7 +57,6 @@ const config: ParserConfig<Token, AST> = {
 
 export const run_parser = (tokens: Token[]) => parser<Token, AST>(tokens, config)
 ```
-> most off the tokens and the AST are ommited
 
 ## Combined the lexer and parser
 Lexing and parsing a string can be done as follows:
