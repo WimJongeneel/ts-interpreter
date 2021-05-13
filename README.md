@@ -3,7 +3,7 @@
 This repro contains an interpreter written in TypeScrip, without the usage of external tooling for the lexing or parsing proces. Both the lexer and parser are broken up into a generic implementation and a concrete definition of the language. 
 
 ## Lexer
-The generic implementation of the lexer can be found in (`lib/lexer.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/lexer.ts]. The entry point of this module is the `lex` function which produces a array of tokens based on the token type, a `LexerDefintion`, the `eof` token and an input string.
+The generic implementation of the lexer can be found in [`lib/lexer.ts`(https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/lexer.ts). The entry point of this module is the `lex` function which produces a array of tokens based on the token type, a `LexerDefintion`, the `eof` token and an input string.
 
 ```ts
 export const lex: <Token extends BaseToken>(defs: LexerDefintion<Token>, eofToken: Token, input: string) => Token[]
@@ -27,10 +27,10 @@ const defs: LexerDefintion<Token> = [
 export const run_lexer = (input: string) => lex<Token>(defs, { kind: 'eof' }, input)
 ```
 
-The full lexer definition can be found in (`lexer.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lexer.ts].
+The full lexer definition can be found in [`lexer.ts`](https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lexer.ts).
 
 ## Parser
-The generic implementation of the parser can be found in (`lib/parser.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/parser.ts]. The entrypoint here is the `parser` function which parses an array of nodes into an AST. For this the parser needs a config object with the `precendeces`, the `infix_parsers`, the `prefix_parsers` and the EOF token. The parser definition can be found in (`parser.ts`)[https://github.com/WimJongeneel/ts-interpreter/blob/master/src/parser.ts]. A portion of this is shown below.
+The generic implementation of the parser can be found in [`lib/parser.ts`](https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/parser.ts). The entrypoint here is the `parser` function which parses an array of nodes into an AST. For this the parser needs a config object with the `precendeces`, the `infix_parsers`, the `prefix_parsers` and the EOF token. The parser definition can be found in [`parser.ts`](https://github.com/WimJongeneel/ts-interpreter/blob/master/src/parser.ts). A portion of this is shown below.
 
 ```ts
 import { ParserConfig, parser } from './lib/parser'
