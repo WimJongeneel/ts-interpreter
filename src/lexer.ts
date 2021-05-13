@@ -7,12 +7,16 @@ export type Token =
     | LiteralToken<'/'>
     | LiteralToken<'eof'>
     | { kind: 'value', value: number }
+    | { kind: 'id', value: string }
+    | LiteralToken<':='>
 
 const defs: LexerDefintion<Token> = [
     [ '+', { kind: '+' } ],
     [ '-', { kind: '-' } ],
     [ '*', { kind: '*' } ],
     [ '/', { kind: '/' } ],
+    [ ':=', { kind: ':=' } ],
+    [ /([a-z]+)/, s => ({kind: 'id', value: String(s)}) ],
     [ /(\d+)/, s => ({kind: 'value', value: Number(s)}) ],
 ]
     
