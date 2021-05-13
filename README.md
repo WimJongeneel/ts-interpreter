@@ -3,7 +3,7 @@
 This repro contains an interpreter written in TypeScrip, without the usage of external tooling for the lexing or parsing proces. Both the lexer and parser are broken up into a generic implementation and a concrete definition of the language. 
 
 ## Lexer
-The generic implementation of the lexer can be found in [`lib/lexer.ts`(https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/lexer.ts). The entry point of this module is the `lex` function which produces a array of tokens based on the token type, a `LexerDefintion`, the `eof` token and an input string.
+The generic implementation of the lexer can be found in [`lib/lexer.ts`](https://github.com/WimJongeneel/ts-interpreter/blob/master/src/lib/lexer.ts). The entry point of this module is the `lex` function which produces a array of tokens based on the token type, a `LexerDefintion`, the `eof` token and an input string.
 
 ```ts
 export const lex: <Token extends BaseToken>(defs: LexerDefintion<Token>, eofToken: Token, input: string) => Token[]
