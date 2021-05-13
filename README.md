@@ -6,7 +6,7 @@ This repro contains an interpreter written in TypeScrip, without the usage of ex
 
 The language support two datatypes: integers and booleans. Variable can be assigned with `:=`. The following operators are supported: `*`, `-`, `+`, `/`, `==`, `!=`, `>`, `<`, `||` en `&&`.
 
-```s
+```ts
 a := 1 + 2 * 3
 b := 1 < 2 && 2 > 1
 c := true || false
