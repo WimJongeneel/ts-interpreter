@@ -8,7 +8,8 @@ interface ParserState<Token extends BaseToken> {
 export  interface ParserConfig<Token extends BaseToken, AST> {
     precedences:Precedences<Token>
     prefix_parsers: PrefixParsers<Token, AST>
-    infix_parsers: InfixParsers<Token, AST>,
+    infix_parsers: InfixParsers<Token, AST>
+    statement: StatementParser<Token, AST>
     eof_kind: Token['kind']
 }
 
@@ -17,6 +18,12 @@ type Precedences<Token extends BaseToken> = { [ _ in Token['kind'] ]: number }
 type PrefixParsers<Token extends BaseToken, AST> =  { [ _ in Token['kind'] ]?: (t: Token) => AST }
 
 type InfixParsers<Token extends BaseToken, AST> =  { [ _ in Token['kind'] ]?: (token: Token, left: AST, rigth: AST) => AST }
+
+export interface ExpressionWildcard {}
+
+export const expr_wildcard: ExpressionWildcard = {}
+
+type StatementParser<Token extends BaseToken, AST> = ([ (Token['kind'] | ExpressionWildcard)[], (ts: (Token|AST)[]) => AST])[]
 
 const current_token =  <Token extends BaseToken>(ps: ParserState<Token>) => ps.tokens[ps.position]
 
@@ -62,10 +69,35 @@ const parse_expression = <Token extends BaseToken, AST>(
         return [left, state]
     }
 
+const parse_statement = <Token extends BaseToken, AST>(
+    config: ParserConfig<Token, AST>,
+    _state: ParserState<Token>,
+    ): AST  => {
+        let state = _state
+        let buffer: (Token|AST)[] = []
+        for(const statement of config.statement) {
+            for(const t of statement[0]) {
+                if(typeof t == 'string' && t == current_token(state).kind) {
+                    buffer.push(current_token(state))
+                    state = move_next_token(state)
+                } else if (typeof t == 'object') {
+                    const [e, s] = parse_expression(config, state, 0)
+                    state = move_next_token(s)
+                    buffer.push(e)
+                }
+            }
+            if(buffer.length == statement[0].length) return statement[1](buffer)
+        }
+    }
+
 export const parser = <Token extends BaseToken, AST>(
     tokens: Token[], 
     config: ParserConfig<Token, AST>
-    ): AST => parse_expression(config, {
-        position: 0,
-        tokens: tokens
-    }, 0)[0]
+    ): AST => {
+        const state = { position: 0, tokens: tokens }
+        
+        const statement = parse_statement(config, state)
+        if(statement) return statement
+
+        return parse_expression(config, state, 0)[0]
+}
