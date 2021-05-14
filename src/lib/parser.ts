@@ -9,7 +9,7 @@ export  interface ParserConfig<Token extends BaseToken, AST> {
     precedences:Precedences<Token>
     prefix_parsers: PrefixParsers<Token, AST>
     infix_parsers: InfixParsers<Token, AST>
-    statement: StatementParser<Token, AST>
+    statements: StatementParser<Token, AST>
     eof_kind: Token['kind']
 }
 
@@ -21,7 +21,7 @@ type InfixParsers<Token extends BaseToken, AST> =  { [ _ in Token['kind'] ]?: (t
 
 export interface ExpressionWildcard {}
 
-export const expr_wildcard: ExpressionWildcard = {}
+export const EXPR: ExpressionWildcard = {}
 
 type StatementParser<Token extends BaseToken, AST> = ([ (Token['kind'] | ExpressionWildcard)[], (ts: (Token|AST)[]) => AST])[]
 
@@ -42,7 +42,7 @@ const parse_infix = <Token extends BaseToken, AST>(config: ParserConfig<Token, A
     const precedence = current_precedence(config, state)
     const state1 = move_next_token(state)
     const [right, state2] = parse_expression(config, state1, precedence)
-    if(right == undefined) throw new Error('no rigth expression for' + token.kind)
+    if(right == undefined) throw new Error('No rigth expression for' + token.kind)
     return [config.infix_parsers[token.kind](token, left, right), state2]
 } 
 
@@ -55,7 +55,7 @@ const parse_expression = <Token extends BaseToken, AST>(
         let state = _state
 
         const prefix_parser = config.prefix_parsers[current_token(state).kind]
-        if(prefix_parser == undefined) throw new Error('no prefix parser for: ' +current_token(state).kind)
+        if(prefix_parser == undefined) throw new Error('No prefix parser for: ' + current_token(state).kind)
         
         let left = prefix_parser(current_token(state))
 
@@ -77,7 +77,7 @@ const parse_statement = <Token extends BaseToken, AST>(
     ): AST  => {
         let state = _state
         let buffer: (Token|AST)[] = []
-        for(const statement of config.statement) {
+        for(const statement of config.statements) {
             for(const t of statement[0]) {
                 if(typeof t == 'string' && t == current_token(state).kind) {
                     buffer.push(current_token(state))

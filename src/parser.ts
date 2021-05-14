@@ -1,5 +1,5 @@
 
-import { ParserConfig, parser, expr_wildcard } from './lib/parser'
+import { ParserConfig, parser, EXPR } from './lib/parser'
 import { Token } from './lexer'
 
 export type AST = 
@@ -39,14 +39,13 @@ const config: ParserConfig<Token, AST> = {
         value: t => t.kind == 'value' ? t : {kind: 'value', value: NaN },
         id: t => t.kind == 'id' ? t : null
     },
-    statement: [
-        // TODO: make the args typesafer
+    statements: [
         [
-            [ 'if', expr_wildcard, 'then', expr_wildcard, 'else', expr_wildcard ],
+            [ 'if', EXPR, 'then', EXPR, 'else', EXPR ],
             t => ({ kind: 'if', condition: t[1] as AST, ifTrue: t[3] as AST, ifFalse: t[5] as AST }) 
         ],
         [
-            [ 'let', 'id', ':=', expr_wildcard],
+            [ 'let', 'id', ':=', EXPR ],
             t => ({ kind: 'assigment', name: (t[1] as any).value, value: t[3] as AST})
         ]
     ],
