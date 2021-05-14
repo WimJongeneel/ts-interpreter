@@ -77,18 +77,23 @@ const parse_statement = <Token extends BaseToken, AST>(
     ): AST  => {
         let state = _state
         let buffer: (Token|AST)[] = []
-        for(const statement of config.statements) {
+        ls: for(const statement of config.statements) {
             for(const t of statement[0]) {
                 if(typeof t == 'string' && t == current_token(state).kind) {
                     buffer.push(current_token(state))
                     state = move_next_token(state)
                 } else if (typeof t == 'object') {
+                    console.log('expr', buffer, state, statement)
                     const [e, s] = parse_expression(config, state, 0)
                     state = move_next_token(s)
                     buffer.push(e)
-                }
+                } else continue ls
             }
             if(buffer.length == statement[0].length) return statement[1](buffer)
+            else {
+                buffer = []
+                state = _state
+            }
         }
     }
 
