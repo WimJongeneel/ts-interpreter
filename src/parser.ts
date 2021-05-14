@@ -11,9 +11,6 @@ export type AST =
 
 const config: ParserConfig<Token, AST> = {
     precedences: {
-        id: -1,
-        value: -1,
-        eof: -1,
         ":=": 5,
         "&&": 6,
         "||": 6,
@@ -25,11 +22,6 @@ const config: ParserConfig<Token, AST> = {
         "-": 20,
         "*": 30,
         "/": 30,
-        //TODO: make this optional
-        if: -1,
-        let: -1,
-        else: -1,
-        then: -1
     },
     infix_parsers: {
         "*": (_, l, r) => ({kind: 'opp', opperator:'*', left: l, right: r}),

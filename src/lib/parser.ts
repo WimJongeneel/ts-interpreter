@@ -13,7 +13,7 @@ export  interface ParserConfig<Token extends BaseToken, AST> {
     eof_kind: Token['kind']
 }
 
-type Precedences<Token extends BaseToken> = { [ _ in Token['kind'] ]: number }
+type Precedences<Token extends BaseToken> = { [ _ in Token['kind'] ]?: number }
 
 type PrefixParsers<Token extends BaseToken, AST> =  { [ _ in Token['kind'] ]?: (t: Token) => AST }
 
@@ -29,9 +29,11 @@ const current_token =  <Token extends BaseToken>(ps: ParserState<Token>) => ps.t
 
 const peek_token = <Token extends BaseToken>(ps: ParserState<Token>) => ps.tokens[ps.position + 1]
 
-const current_precedence =  <Token extends BaseToken, AST>(config: ParserConfig<Token, AST>, state: ParserState<Token>) => config.precedences[current_token(state).kind]
+const current_precedence =  <Token extends BaseToken, AST>(config: ParserConfig<Token, AST>, state: ParserState<Token>) => 
+    config.precedences[current_token(state).kind] ?? -1
 
-const peek_precedence = <Token extends BaseToken, AST>(config: ParserConfig<Token, AST>, state: ParserState<Token>) => config.precedences[peek_token(state).kind]
+const peek_precedence = <Token extends BaseToken, AST>(config: ParserConfig<Token, AST>, state: ParserState<Token>) => 
+    config.precedences[peek_token(state).kind] ?? -1
 
 const move_next_token = <Token extends BaseToken>(ps: ParserState<Token>):ParserState<Token> => ({...ps, position: ps.position + 1 })
 
