@@ -83,7 +83,6 @@ const parse_statement = <Token extends BaseToken, AST>(
                     buffer.push(current_token(state))
                     state = move_next_token(state)
                 } else if (typeof t == 'object') {
-                    console.log('expr', buffer, state, statement)
                     const [e, s] = parse_expression(config, state, 0)
                     state = move_next_token(s)
                     buffer.push(e)
