@@ -15,6 +15,10 @@ export type Token =
     | LiteralToken<'>'>
     | LiteralToken<'||'>
     | LiteralToken<'&&'>
+    | LiteralToken<'if'>
+    | LiteralToken<'then'>
+    | LiteralToken<'else'>
+    | LiteralToken<'let'>
 
 const defs: LexerDefintion<Token> = [
     [ '+', { kind: '+' } ],
@@ -30,8 +34,12 @@ const defs: LexerDefintion<Token> = [
     [ '&&', { kind: '&&' } ],
     [ 'true', { kind: 'value', value: true } ],
     [ 'false', { kind: 'value', value: false } ],
-    [ /([a-z]+)/, s => ({kind: 'id', value: String(s)}) ],
-    [ /(\d+)/, s => ({kind: 'value', value: Number(s)}) ],
+    [ 'else', { kind: 'else' } ],
+    [ 'if', { kind: 'if' } ],
+    [ 'then', { kind: 'then' } ],
+    [ 'let', { kind: 'let' } ],
+    [ /^([a-z]+)/m, s => ({kind: 'id', value: String(s)}) ],
+    [ /^(\d+)/m, s => ({kind: 'value', value: Number(s)}) ],
 ]
     
 export const run_lexer = (input: string) => lex<Token>(defs, { kind: 'eof' }, input)

@@ -10,7 +10,7 @@ export type LexerDefintion<Token extends BaseToken> = (
 )[]
 
 const skip_whitespace = (input: string) => {
-    const res = /(\s*)/.exec(input)
+    const res = /^(\s+)/.exec(input)
     if(res?.[0]) return input.substring(res[0].length)
     return input
 }
@@ -22,7 +22,7 @@ const read = <Token extends BaseToken>(defs: LexerDefintion<BaseToken>, input: s
             if (input1.startsWith(d[0])) return [ input1.substring(d[0].length), d[1] as Token]
             continue
         }
-        if((d[0] as RegExp).test(input)) {
+        if((d[0] as RegExp).test(input1)) {
             const res = (d[0] as RegExp).exec(input1)
             return [ input1.substring(res[0].length), (d[1] as any)(res[0]) ]
         }
