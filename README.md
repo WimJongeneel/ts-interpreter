@@ -4,12 +4,21 @@ This repro contains an interpreter written in TypeScrip, without the usage of ex
 
 ## Language
 
-The language support two datatypes: integers and booleans. Variable can be assigned with `:=`. The following operators are supported: `*`, `-`, `+`, `/`, `==`, `!=`, `>`, `<`, `||` en `&&`.
+The language support two datatypes: integers and booleans. Variable can be assigned with `:=`. The following operators are supported: `*`, `-`, `+`, `/`, `==`, `!=`, `>`, `<`, `||` en `&&`. Some examples of expressions:
 
 ```ts
-a := 1 + 2 * 3
-b := 1 < 2 && 2 > 1
-c := true || false
+1 + a * 3
+1 < 2 && 2 > 1
+true || x
+y
+```
+
+The language supports at this time 3 different statements: variable declarations, if-statements and expression-statements. Both declarations and if-statements will print `undefined` in the REPL. Expression-statements will print the resulting value.
+
+```ts
+let a := 1 + 1
+if x > 2 then 2 else 4
+1 + 1
 ```
 
 ## Lexer
